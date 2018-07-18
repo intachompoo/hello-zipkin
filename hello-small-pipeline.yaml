@@ -6,7 +6,7 @@ metadata:
   labels:
     app: cicd-pipeline
     name: cicd-pipeline
-  name: hello-pipeline
+  name: hello-small-pipeline
 spec:
   triggers:
   - github:

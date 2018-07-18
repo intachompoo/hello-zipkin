@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: BuildConfig
+metadata:
+  annotations:
+    pipeline.alpha.openshift.io/uses: '[{"name": "hello", "namespace": "", "kind": "DeploymentConfig"}]'
+  labels:
+    name: hello-pipeline
+  name: hello-pipeline
+spec:
+  strategy:
+    jenkinsPipelineStrategy:
+      jenkinsfile: |-
+        node('maven') {
+            stage 'build'
+            openshiftBuild(buildConfig: 'hello', showBuildLogs: 'true')
+            stage 'deploy'
+            openshiftDeploy(deploymentConfig: 'hello')
+        }
+    type: JenkinsPipeline
+  triggers:
+  - github:
+      secret: SSAs345m6bnU
+    type: GitHub
+  - generic:
+      secret: SSAs345m6bnU
+    type: Generic

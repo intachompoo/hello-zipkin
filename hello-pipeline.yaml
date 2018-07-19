@@ -55,17 +55,19 @@ spec:
                   }
                 }
               }
+              // Archive app to nexus via nexus3 profile.
               stage('Archive App') {
                 steps {
                   sh "${mvnCmd} deploy -DskipTests=true -P nexus3"
                 }
               }
+              // Create BuildConfig in dev project if not exist.
               stage('Create Image Builder') {
                 when {
                   expression {
                     openshift.withCluster() {
                       openshift.withProject(env.DEV_PROJECT) {
-                        return !openshift.selector("bc", "tasks").exists();
+                        return !openshift.selector("bc", "hello").exists();
                       }
                     }
                   }
@@ -74,7 +76,7 @@ spec:
                   script {
                     openshift.withCluster() {
                       openshift.withProject(env.DEV_PROJECT) {
-                        openshift.newBuild("--name=tasks", "--image-stream=wildfly:10.0", "--binary=true")
+                        openshift.newBuild("--name=hello", "--image-stream=fuse-java:latest", "--binary=true")
                       }
                     }
                   }
